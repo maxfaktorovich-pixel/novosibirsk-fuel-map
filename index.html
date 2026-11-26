@@ -3,39 +3,58 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Заправки Новосибирска — OpenStreetMap</title>
+  <title>Заправки Новосибирска — лучшие цены без очередей</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <header>
-    <h1>⛽ Заправки Новосибирска</h1>
-    <p>Карта АЗС на основе OpenStreetMap. Данные о наличии и ценах — от пользователей.</p>
+  <header class="header">
+    <div class="header-content">
+      <div class="logo">
+        <span class="logo-icon">⛽</span>
+        <div>
+          <h1>Заправки Новосибирска</h1>
+          <p>Лучшие цены • Без очередей • Актуальные данные</p>
+        </div>
+      </div>
+    </div>
   </header>
 
   <div class="controls">
-    <input type="text" id="search" placeholder="Поиск по названию или бренду..." />
-    <button id="locate">📍 Рядом со мной</button>
-    <div class="filters">
-      <label><input type="checkbox" id="filter-available" checked> Только с отметками «есть топливо»</label>
+    <div class="search-box">
+      <input type="text" id="search" placeholder="Поиск по названию или бренду..." />
     </div>
+    <button id="locate" class="btn btn-primary">📍 Рядом со мной</button>
+    <label class="toggle">
+      <input type="checkbox" id="filter-available" checked>
+      <span>Только с топливом и без очередей</span>
+    </label>
   </div>
 
-  <div id="map"></div>
+  <main class="main">
+    <div id="map"></div>
 
-  <div id="sidebar">
-    <h2>Список заправок</h2>
-    <div id="station-list"></div>
-    <div class="info">
-      <p><strong>Как это работает:</strong></p>
-      <ul>
-        <li>Местоположение заправок взято из OpenStreetMap (тег <code>amenity=fuel</code>).</li>
-        <li>Отметки «есть/нет топлива» и цены сохраняются локально в вашем браузере (localStorage).</li>
-        <li>Для актуальных цен и наличия смотрите сервисы: <a href="https://gdebenzin.net/azs/novosibirsk" target="_blank">ГдеБензин</a>, <a href="https://tboo.ru/gpn/azs/novosibirsk/" target="_blank">Топливо рядом</a>, <a href="https://fuelprice.ru/novosibirsk" target="_blank">FuelPrice</a>.</li>
-      </ul>
-      <p class="attribution">© <a href="https://www.openstreetmap.org/copyright" target="_blank">OpenStreetMap</a> contributors</p>
-    </div>
-  </div>
+    <aside class="sidebar">
+      <div class="recommended">
+        <h2>Лучшие сейчас</h2>
+        <div id="recommended-list"></div>
+      </div>
+
+      <div class="all-stations">
+        <h2>Все заправки</h2>
+        <div id="station-list"></div>
+      </div>
+
+      <div class="info">
+        <p><strong>Как это работает</strong></p>
+        <p>Места — из OpenStreetMap. Цены, наличие и очереди отмечают пользователи локально. Сайт автоматически показывает самые дешёвые станции без очередей.</p>
+        <p class="attribution">© <a href="https://www.openstreetmap.org/copyright" target="_blank">OpenStreetMap</a> contributors</p>
+      </div>
+    </aside>
+  </main>
 
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
   <script src="app.js"></script>
