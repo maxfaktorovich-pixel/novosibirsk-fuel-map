@@ -51,8 +51,15 @@ function createPopupContent(station) {
   const statusText = report.status === 'yes' ? '<span class="status-yes">✅ Есть топливо</span>' :
                      report.status === 'no' ? '<span class="status-no">❌ Нет топлива</span>' :
                      '<span class="status-unknown">❓ Неизвестно</span>';
-  const queueText = report.queue === 'yes' ? '<span class="status-queue">⏳ Есть очередь</span>' :
-                    report.queue === 'no' ? '<span class="status-yes">✅ Без очереди</span>' : '';
+  
+  let queueText = '';
+  if (report.queue === 'yes') {
+    queueText = '<div style="margin-top:4px"><span class="status-queue">⏳ <strong>Есть очередь</strong></span></div>';
+  } else if (report.queue === 'no') {
+    queueText = '<div style="margin-top:4px"><span class="status-yes">✅ <strong>Без очереди</strong></span></div>';
+  } else {
+    queueText = '<div style="margin-top:4px"><span class="status-unknown">❓ Очередь: неизвестно</span></div>';
+  }
 
   const fuels = [];
   if (station.tags['fuel:octane_92'] || station.tags['fuel:octane_91']) fuels.push('АИ-92');
@@ -66,12 +73,13 @@ function createPopupContent(station) {
     ${station.address ? station.address + '<br>' : ''}
     ${fuels.length ? 'Топливо: ' + fuels.join(', ') + '<br>' : ''}
     ${station.tags.opening_hours ? 'Часы: ' + station.tags.opening_hours + '<br>' : ''}
-    <div style="margin-top:6px">${statusText} ${queueText}</div>
+    <div style="margin-top:8px">${statusText}</div>
+    ${queueText}
     <div class="popup-actions">
       <button onclick="setReport(${station.id}, {status: 'yes'})">Есть топливо</button>
       <button onclick="setReport(${station.id}, {status: 'no'})">Нет топлива</button>
       <button onclick="setReport(${station.id}, {queue: 'no'})">Без очереди</button>
-      <button onclick="setReport(${station.id}, {queue: 'yes'})">Очередь</button>
+      <button onclick="setReport(${station.id}, {queue: 'yes'})">Есть очередь</button>
       <button onclick="setReport(${station.id}, {status: null, queue: null})">Сброс</button>
     </div>
     <div style="margin-top:8px;font-size:0.85em">
