@@ -7,6 +7,12 @@ const BBOX = {
 };
 const CENTER = [54.99, 82.92];
 
+const CITY_AVG = {
+  ai92: 66.3,
+  ai95: 70.9,
+  diesel: 86.5
+};
+
 const map = L.map('map').setView(CENTER, 12);
 
 L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
@@ -81,17 +87,22 @@ function renderStationCard(s, isRecommended = false) {
   const statusClass = report.status === 'yes' ? 'status-yes' : report.status === 'no' ? 'status-no' : 'status-unknown';
   const statusText = report.status === 'yes' ? 'Есть топливо' : report.status === 'no' ? 'Нет топлива' : 'Нет данных';
   const queueText = report.queue === 'no' ? ' • Без очереди' : report.queue === 'yes' ? ' • Очередь' : '';
-  const prices = [];
-  if (report.price92) prices.push(`92: ${report.price92}₽`);
-  if (report.price95) prices.push(`95: ${report.price95}₽`);
-  if (report.diesel) prices.push(`ДТ: ${report.diesel}₽`);
+  
+  let pricesHtml = '';
+  if (report.price92 || report.price95 || report.diesel) {
+    const parts = [];
+    if (report.price92) parts.push(`<span>92: ${report.price92}₽</span>`);
+    if (report.price95) parts.push(`<span>95: ${report.price95}₽</span>`);
+    if (report.diesel) parts.push(`<span>ДТ: ${report.diesel}₽</span>`);
+    pricesHtml = `<div class="prices">${parts.join('')}</div>`;
+  }
 
   return `
     <div class="station-card ${isRecommended ? 'recommended' : ''}" onclick="focusStation(${s.id})">
       <h3>${s.name}</h3>
       <div class="meta">${s.brand || ''} ${s.address || ''}</div>
       <div class="status ${statusClass}">${statusText}${queueText}</div>
-      ${prices.length ? `<div class="prices">${prices.join(' · ')}</div>` : ''}
+      ${pricesHtml}
     </div>
   `;
 }
@@ -112,7 +123,6 @@ function renderAll() {
     return matchesSearch && matchesAvail;
   });
 
-  // Sort by best price (cheapest first), then by availability
   filtered.sort((a, b) => {
     const pa = getBestPrice(getReport(a.id));
     const pb = getBestPrice(getReport(b.id));
@@ -122,7 +132,6 @@ function renderAll() {
     return 0;
   });
 
-  // Recommended: top stations with fuel, no queue, and price
   const recommended = filtered.filter(s => {
     const r = getReport(s.id);
     return r.status === 'yes' && r.queue !== 'yes' && getBestPrice(r);
@@ -208,6 +217,19 @@ document.getElementById('locate').addEventListener('click', () => {
     }, () => alert('Не удалось определить местоположение'));
   } else {
     alert('Геолокация не поддерживается');
+  }
+});
+
+// Добавляем блок средних цен по городу
+document.addEventListener('DOMContentLoaded', () => {
+  const sidebar = document.querySelector('.sidebar');
+  if (sidebar && !document.querySelector('.city-avg')) {
+    const avg = document.createElement('div');
+    avg.className = 'city-avg';
+    avg.innerHTML = `<strong>Средние по Новосибирску (ориентир):</strong><br>
+      АИ-92 ≈ ${CITY_AVG.ai92} ₽ · АИ-95 ≈ ${CITY_AVG.ai95} ₽ · ДТ ≈ ${CITY_AVG.diesel} ₽<br>
+      <span style="font-size:0.8em;opacity:0.8">Точные цены на конкретных АЗС появляются, когда их отметят пользователи</span>`;
+    sidebar.insertBefore(avg, sidebar.firstChild);
   }
 });
 
