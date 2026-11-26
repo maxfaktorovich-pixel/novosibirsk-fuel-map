@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Заправки Новосибирска — OpenStreetMap</title>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header>
+    <h1>⛽ Заправки Новосибирска</h1>
+    <p>Карта АЗС на основе OpenStreetMap. Данные о наличии и ценах — от пользователей.</p>
+  </header>
+
+  <div class="controls">
+    <input type="text" id="search" placeholder="Поиск по названию или бренду..." />
+    <button id="locate">📍 Рядом со мной</button>
+    <div class="filters">
+      <label><input type="checkbox" id="filter-available" checked> Только с отметками «есть топливо»</label>
+    </div>
+  </div>
+
+  <div id="map"></div>
+
+  <div id="sidebar">
+    <h2>Список заправок</h2>
+    <div id="station-list"></div>
+    <div class="info">
+      <p><strong>Как это работает:</strong></p>
+      <ul>
+        <li>Местоположение заправок взято из OpenStreetMap (тег <code>amenity=fuel</code>).</li>
+        <li>Отметки «есть/нет топлива» и цены сохраняются локально в вашем браузере (localStorage).</li>
+        <li>Для актуальных цен и наличия смотрите сервисы: <a href="https://gdebenzin.net/azs/novosibirsk" target="_blank">ГдеБензин</a>, <a href="https://tboo.ru/gpn/azs/novosibirsk/" target="_blank">Топливо рядом</a>, <a href="https://fuelprice.ru/novosibirsk" target="_blank">FuelPrice</a>.</li>
+      </ul>
+      <p class="attribution">© <a href="https://www.openstreetmap.org/copyright" target="_blank">OpenStreetMap</a> contributors</p>
+    </div>
+  </div>
+
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
